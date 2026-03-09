@@ -1,9 +1,13 @@
 import {
+  Building2,
   ChevronDown,
   Ellipsis,
   FileChartPie,
   LayoutDashboard,
-  Settings
+  LineChart,
+  Package,
+  Settings,
+  Users,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
@@ -47,7 +51,36 @@ const AppSidebar: React.FC = () => {
       path: "/admin/dashboard",
       permission: [PERMISSIONS.DASHBOARD_READ],
     },
-    
+    {
+      icon: <Package />,
+      name: "Orders",
+      path: "/admin/orders",
+      permission: [PERMISSIONS.ORDER_READ],
+    },
+    {
+      icon: <Users />,
+      name: "Assignments",
+      path: "/admin/assignments",
+      permission: [PERMISSIONS.ORDER_READ],
+    },
+    {
+      icon: <Users />,
+      name: "Agents",
+      path: "/admin/agents",
+      permission: [PERMISSIONS.USER_READ],
+    },
+    {
+      icon: <Building2 />,
+      name: "Companies",
+      path: "/admin/companies",
+      permission: [PERMISSIONS.SHIPPING_READ],
+    },
+    {
+      icon: <LineChart />,
+      name: "Analytics",
+      path: "/admin/analytics",
+      permission: [PERMISSIONS.DASHBOARD_READ],
+    },
     {
       icon: <FileChartPie />,
       name: "Reports",

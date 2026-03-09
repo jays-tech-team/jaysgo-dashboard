@@ -18,13 +18,19 @@ import NotFound from "./pages/OtherPage/NotFound";
 
 
 const Home = lazy(() => import("./pages/Dashboard/Home"));
-
 const UsersList = lazy(() => import("./pages/Users/UsersList"));
-
-
-
 const SettingsList = lazy(() => import("./pages/Settings/SettingsList"));
 const SettingsEdit = lazy(() => import("./pages/Settings/SettingsEdit"));
+const OrdersList = lazy(() => import("./pages/Orders/OrdersList"));
+const OrderDetails = lazy(() => import("./pages/Orders/OrderDetails"));
+const AgentsList = lazy(() => import("./pages/Agents/AgentsList"));
+const CompaniesList = lazy(() => import("./pages/Companies/CompaniesList"));
+const AnalyticsDashboard = lazy(
+  () => import("./pages/Analytics/AnalyticsDashboard"),
+);
+const OrderAssignments = lazy(
+  () => import("./pages/Assignments/OrderAssignments"),
+);
 
 export default function App() {
   return (
@@ -70,7 +76,69 @@ export default function App() {
                     </ErrorBoundary>
                   }
                 />
-                
+                <Route
+                  path="analytics"
+                  element={
+                    <ErrorBoundary>
+                      <Suspense fallback={<LoadingCakeFullSize />}>
+                        <AnalyticsDashboard />
+                      </Suspense>
+                    </ErrorBoundary>
+                  }
+                />
+                <Route
+                  path="assignments"
+                  element={
+                    <ErrorBoundary>
+                      <Suspense fallback={<LoadingCakeFullSize />}>
+                        <OrderAssignments />
+                      </Suspense>
+                    </ErrorBoundary>
+                  }
+                />
+                <Route
+                  path="agents"
+                  element={
+                    <ErrorBoundary>
+                      <Suspense fallback={<LoadingCakeFullSize />}>
+                        <AgentsList />
+                      </Suspense>
+                    </ErrorBoundary>
+                  }
+                />
+                <Route
+                  path="companies"
+                  element={
+                    <ErrorBoundary>
+                      <Suspense fallback={<LoadingCakeFullSize />}>
+                        <CompaniesList />
+                      </Suspense>
+                    </ErrorBoundary>
+                  }
+                />
+                <Route path="orders">
+                  <Route
+                    index
+                    element={
+                      <ErrorBoundary>
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <OrdersList />
+                        </Suspense>
+                      </ErrorBoundary>
+                    }
+                  />
+                  <Route
+                    path=":orderId"
+                    element={
+                      <ErrorBoundary>
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <OrderDetails />
+                        </Suspense>
+                      </ErrorBoundary>
+                    }
+                  />
+                </Route>
+
                 <Route path="reports">
                   <Route
                     index
