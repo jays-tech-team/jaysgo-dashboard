@@ -1,44 +1,46 @@
 import PageMeta from "../../components/common/PageMeta";
+import { useMemo, useState } from "react";
 import ComponentCard from "../../components/common/ComponentCard";
 import Table, { TableColumns } from "../../components/ui/table/Table";
+import Input from "../../components/form/input/InputField";
+import Label from "../../components/form/Label";
+import Select from "../../components/form/Select";
+import DatePicker from "../../components/form/date-picker";
+import { MOCK_ORDERS } from "./mockOrders";
 
 const columns: TableColumns = [
-  { header: "Order ID", accessor: "orderId", sortable: true },
-  { header: "Customer", accessor: "customer", sortable: true },
-  { header: "Address", accessor: "address", sortable: false },
-  { header: "Status", accessor: "status", sortable: true },
-  { header: "Assigned To", accessor: "assignedTo", sortable: true },
-  { header: "Created At", accessor: "createdAt", sortable: true },
-];
-
-const mockData = [
-  {
-    orderId: "#ORD-1024",
-    customer: "Jane Doe",
-    address: "221B Baker Street, London",
-    status: "Pending assignment",
-    assignedTo: "Unassigned",
-    createdAt: "2026-03-09 09:12",
-  },
-  {
-    orderId: "#ORD-1025",
-    customer: "John Smith",
-    address: "742 Evergreen Terrace, Springfield",
-    status: "Out for delivery",
-    assignedTo: "Agent - Alex",
-    createdAt: "2026-03-09 09:25",
-  },
-  {
-    orderId: "#ORD-1026",
-    customer: "Acme Corp",
-    address: "1600 Amphitheatre Parkway, CA",
-    status: "Delivered",
-    assignedTo: "Company - FastShip",
-    createdAt: "2026-03-09 08:45",
-  },
+  { header: "Order #", accessor: "order_number", sortable: true },
+  { header: "Customer", accessor: "customer_name", sortable: true },
+  { header: "Status", accessor: "order_status", sortable: true },
+  { header: "Assigned To", accessor: "assigned_to", sortable: true },
+  { header: "Scheduled", accessor: "scheduled_at", sortable: true },
+  { header: "Created", accessor: "created_at", sortable: true },
 ];
 
 export default function OrdersList() {
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const [scheduledDate, setScheduledDate] = useState("");
+  const [deliveryDate, setDeliveryDate] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return MOCK_ORDERS.filter((o) => {
+      const matchesSearch =
+        !q ||
+        o.order_number.toLowerCase().includes(q) ||
+        o.customer_name.toLowerCase().includes(q) ||
+        o.address.toLowerCase().includes(q) ||
+        o.order_uuid.toLowerCase().includes(q);
+
+      const matchesStatus = !status || o.order_status === status;
+      const matchesScheduled = !scheduledDate || o.scheduled_at === scheduledDate;
+      const matchesDelivery = !deliveryDate || o.delivery_date === deliveryDate;
+
+      return matchesSearch && matchesStatus && matchesScheduled && matchesDelivery;
+    });
+  }, [search, status, scheduledDate, deliveryDate]);
+
   return (
     <>
       <PageMeta
@@ -47,9 +49,65 @@ export default function OrdersList() {
       />
       <ComponentCard
         title="Orders"
-        desc="Overview of all delivery orders, their status, and assignment."
+        desc="Overview of all delivery orders, their status, assignment, and scheduling."
       >
-        <Table columns={columns} data={mockData} />
+        <div className="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <Label>Search</Label>
+            <Input
+              value={search}
+              type="search"
+              placeholder="Order #, customer, address…"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2"
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label>Status</Label>
+            <Select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              options={[
+                { value: "", label: "All" },
+                { value: "pending_assignment", label: "Pending assignment" },
+                { value: "assigned", label: "Assigned" },
+                { value: "out_for_delivery", label: "Out for delivery" },
+                { value: "delivered", label: "Delivered" },
+                { value: "cancelled", label: "Cancelled" },
+              ]}
+            />
+          </div>
+          <div>
+            <DatePicker
+              value={scheduledDate}
+              id="scheduled_date"
+              label="Scheduled Date"
+              minDate={""}
+              dateFormat="Y-m-d"
+              placeholder="Select the date"
+              clearButton={true}
+              onChange={(_dates, dateStr) => setScheduledDate(dateStr)}
+            />
+          </div>
+          <div>
+            <DatePicker
+              value={deliveryDate}
+              id="delivery_date"
+              label="Delivery Date"
+              minDate={""}
+              dateFormat="Y-m-d"
+              placeholder="Select the date"
+              clearButton={true}
+              onChange={(_dates, dateStr) => setDeliveryDate(dateStr)}
+            />
+          </div>
+        </div>
+
+        <Table
+          columns={columns}
+          data={filtered as unknown as Record<string, string>[]}
+          viewPath="/admin/orders/:order_uuid"
+        />
       </ComponentCard>
     </>
   );
