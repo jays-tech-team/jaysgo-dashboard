@@ -1,0 +1,47 @@
+name: CI/CD Deploy JaysGo Dashboard DEV
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    name: Deploy JaysGo Dashboard to DEV Server
+    runs-on: ubuntu-latest
+    environment: DEV
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Debug Secret Existence
+        run: |
+          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+            echo "SSH_PRIVATE_KEY is not set or empty"
+          else
+            echo "SSH_PRIVATE_KEY is set"
+          fi
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 13.126.56.78
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 30m
+          command_timeout: 30m
+          script: |
+            set -e
+            cd /var/www/dashboard-jaysgo-sandbox.jays.ae
+            echo "📦 Fetching latest code"
+            git fetch origin
+            PREV_COMMIT=$(git rev-parse HEAD)
+            echo "🔄 Reset to latest dev branch"
+            git reset --hard origin/dev
+            git clean -fd
+            echo "📦 Installing dependencies"
+            npm install
+            echo "⚙️ Building React project"
+            npm run build
+            echo "✅ JaysGo Dashboard deployment complete"
