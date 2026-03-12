@@ -45,7 +45,7 @@ export default function OrderDetails() {
       ? {
           ...found,
           order_status_slug: found.order_status,
-          order_status_name: found.order_status.replaceAll("_", " "),
+          order_status_name: found.order_status.replace("_", " "),
           shipping_address: found.address,
         }
       : null;
@@ -99,7 +99,7 @@ export default function OrderDetails() {
               order_status: next,
               status: next,
               order_status_slug: next,
-              order_status_name: next.replaceAll("_", " "),
+              order_status_name: next.replace("_", " "),
             }
           : prev,
       );
@@ -195,7 +195,12 @@ export default function OrderDetails() {
             <div className="pt-2">
               <OrderStatusSelect
                 value={statusSelection}
-                onChange={(val) => setStatusSelection(val || [])}
+                onChange={(val) => setStatusSelection((prev) =>{
+                if(Array.isArray(val)){
+                  return [...prev, ...val];
+                }
+                return [...prev, val];
+                } )}
                 label="Delivery Status"
                 placeholder="Select status"
               />
