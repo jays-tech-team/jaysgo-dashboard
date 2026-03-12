@@ -1,6 +1,9 @@
 import PageMeta from "../../components/common/PageMeta";
 import ComponentCard from "../../components/common/ComponentCard";
 import Table, { TableColumns } from "../../components/ui/table/Table";
+import Button from "../../components/ui/button/Button";
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const columns: TableColumns = [
   { header: "Company", accessor: "name", sortable: true },
@@ -12,6 +15,7 @@ const columns: TableColumns = [
 
 const mockData = [
   {
+    id: "1",
     name: "FastShip Logistics",
     serviceArea: "City-wide",
     status: "Active",
@@ -19,6 +23,7 @@ const mockData = [
     rating: "4.7",
   },
   {
+    id: "2",
     name: "GreenRoute Delivery",
     serviceArea: "Downtown",
     status: "Paused",
@@ -26,6 +31,7 @@ const mockData = [
     rating: "4.4",
   },
   {
+    id: "3",
     name: "ExpressWheels",
     serviceArea: "Suburbs",
     status: "Active",
@@ -35,6 +41,8 @@ const mockData = [
 ];
 
 export default function CompaniesList() {
+  const navigate = useNavigate();
+
   return (
     <>
       <PageMeta
@@ -44,8 +52,24 @@ export default function CompaniesList() {
       <ComponentCard
         title="Delivery Companies"
         desc="Overview of all delivery partners, their coverage, and live load."
+        actions={
+          <div className="flex justify-end">
+            <Button
+              size="sm"
+              onClick={() => navigate("/admin/companies/add")}
+              className="flex items-center gap-2"
+            >
+              <Plus className="size-4" />
+              Add Company
+            </Button>
+          </div>
+        }
       >
-        <Table columns={columns} data={mockData} />
+        <Table
+          columns={columns}
+          data={mockData as unknown as Record<string, string>[]}
+          viewPath="/admin/companies/:id"
+        />
       </ComponentCard>
     </>
   );

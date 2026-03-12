@@ -25,6 +25,27 @@ const OrdersList = lazy(() => import("./pages/Orders/OrdersList"));
 const OrderDetails = lazy(() => import("./pages/Orders/OrderDetails"));
 const AgentsList = lazy(() => import("./pages/Agents/AgentsList"));
 const CompaniesList = lazy(() => import("./pages/Companies/CompaniesList"));
+const AddCompany = lazy(() => import("./pages/Companies/AddCompany"));
+const CompanyDetailsLayout = lazy(
+  () => import("./pages/Companies/CompanyDetailsLayout"),
+);
+const CompanyOverview = lazy(
+  () => import("./pages/Companies/tabs/CompanyOverview"),
+);
+const CompanyOrders = lazy(() => import("./pages/Companies/tabs/CompanyOrders"));
+const CompanyDrivers = lazy(
+  () => import("./pages/Companies/tabs/CompanyDrivers"),
+);
+const CompanyVehicles = lazy(
+  () => import("./pages/Companies/tabs/CompanyVehicles"),
+);
+const CompanyDocuments = lazy(
+  () => import("./pages/Companies/tabs/CompanyDocuments"),
+);
+const CompanyUsers = lazy(() => import("./pages/Companies/tabs/CompanyUsers"));
+const CompanySettings = lazy(
+  () => import("./pages/Companies/tabs/CompanySettings"),
+);
 const AnalyticsDashboard = lazy(
   () => import("./pages/Analytics/AnalyticsDashboard"),
 );
@@ -106,16 +127,95 @@ export default function App() {
                     </ErrorBoundary>
                   }
                 />
-                <Route
-                  path="companies"
-                  element={
-                    <ErrorBoundary>
-                      <Suspense fallback={<LoadingCakeFullSize />}>
-                        <CompaniesList />
-                      </Suspense>
-                    </ErrorBoundary>
-                  }
-                />
+                <Route path="companies">
+                  <Route
+                    index
+                    element={
+                      <ErrorBoundary>
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <CompaniesList />
+                        </Suspense>
+                      </ErrorBoundary>
+                    }
+                  />
+                  <Route
+                    path="add"
+                    element={
+                      <ErrorBoundary>
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <AddCompany />
+                        </Suspense>
+                      </ErrorBoundary>
+                    }
+                  />
+                  <Route
+                    path=":id"
+                    element={
+                      <ErrorBoundary>
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <CompanyDetailsLayout />
+                        </Suspense>
+                      </ErrorBoundary>
+                    }
+                  >
+                    <Route
+                      index
+                      element={
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <CompanyOverview />
+                        </Suspense>
+                      }
+                    />
+                    <Route
+                      path="orders"
+                      element={
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <CompanyOrders />
+                        </Suspense>
+                      }
+                    />
+                    <Route
+                      path="drivers"
+                      element={
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <CompanyDrivers />
+                        </Suspense>
+                      }
+                    />
+                    <Route
+                      path="vehicles"
+                      element={
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <CompanyVehicles />
+                        </Suspense>
+                      }
+                    />
+                    <Route
+                      path="documents"
+                      element={
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <CompanyDocuments />
+                        </Suspense>
+                      }
+                    />
+                    <Route
+                      path="users"
+                      element={
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <CompanyUsers />
+                        </Suspense>
+                      }
+                    />
+                    <Route
+                      path="settings"
+                      element={
+                        <Suspense fallback={<LoadingCakeFullSize />}>
+                          <CompanySettings />
+                        </Suspense>
+                      }
+                    />
+                  </Route>
+                </Route>
                 <Route path="orders">
                   <Route
                     index
