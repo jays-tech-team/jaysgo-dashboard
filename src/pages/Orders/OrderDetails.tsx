@@ -12,6 +12,15 @@ import { MOCK_ORDERS } from "./mockOrders";
 
 type OrderDetailsRecord = Record<string, unknown>;
 
+type OrderProduct = {
+  name: string;
+  category: "cake" | "flower";
+  weight: string;
+  dimensions: string;
+  imageUrl: string;
+  deliveryNotes?: string;
+};
+
 export default function OrderDetails() {
   const { orderId } = useParams<{ orderId: string }>();
   const [order, setOrder] = useState<OrderDetailsRecord | null>(null);
@@ -26,6 +35,63 @@ export default function OrderDetails() {
   const [isSavingStatus, setIsSavingStatus] = useState(false);
 
   const orderUuid = orderId || null;
+
+  const MOCK_ORDER_PRODUCTS: Record<string, OrderProduct[]> = useMemo(
+    () => ({
+      ord_1024: [
+        {
+          name: "Birthday Cake",
+          category: "cake",
+          weight: "1.5 kg",
+          dimensions: "20 x 20 x 10 cm",
+          imageUrl:
+            "https://res.cloudinary.com/dth6wcygw/image/upload/q_auto/v1770018181/ANPH9934_hjxchz.jpg",
+          deliveryNotes: "Keep refrigerated. Handle with care.",
+        },
+        {
+          name: "Rose Bouquet",
+          category: "flower",
+          weight: "0.6 kg",
+          dimensions: "60 x 25 x 25 cm",
+          imageUrl:
+            "https://res.cloudinary.com/dth6wcygw/image/upload/q_auto/v1770376380/ANPH1259_Large_zyb8hy.jpg",
+          deliveryNotes: "Store in cool place. Do not place in direct sun.",
+        },
+      ],
+      ord_1025: [
+        {
+          name: "Chocolate Fudge Cake",
+          category: "cake",
+          weight: "2.0 kg",
+          dimensions: "22 x 22 x 12 cm",
+          imageUrl:
+            "https://res.cloudinary.com/dth6wcygw/image/upload/q_auto/v1770018181/ANPH9934_hjxchz.jpg",
+          deliveryNotes: "Deliver before 6 PM. Keep level during transport.",
+        },
+      ],
+      ord_1026: [
+        {
+          name: "Wedding Cake",
+          category: "cake",
+          weight: "4.5 kg",
+          dimensions: "30 x 30 x 25 cm",
+          imageUrl:
+            "https://res.cloudinary.com/dth6wcygw/image/upload/q_auto/v1770018181/ANPH9934_hjxchz.jpg",
+          deliveryNotes: "Top tier is fragile. Requires signature on delivery.",
+        },
+        {
+          name: "Luxury Flower Arrangement",
+          category: "flower",
+          weight: "1.2 kg",
+          dimensions: "55 x 35 x 30 cm",
+          imageUrl:
+            "https://res.cloudinary.com/dth6wcygw/image/upload/q_auto/v1770376380/ANPH1259_Large_zyb8hy.jpg",
+          deliveryNotes: "May be left with security desk.",
+        },
+      ],
+    }),
+    [],
+  );
 
   const headerTitle = useMemo(() => {
     const orderNumber =
@@ -229,6 +295,81 @@ export default function OrderDetails() {
             <p className="text-gray-500 dark:text-gray-400">
               Use “Assign / Reassign” to manually set the driver/company.
             </p>
+          </div>
+        </ComponentCard>
+
+        <ComponentCard
+          title="Products"
+          desc="Items included in this delivery, with weight, dimensions, and delivery notes."
+          className="md:col-span-3"
+        >
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-gray-200 dark:border-gray-700">
+                  <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-300">
+                    Image
+                  </th>
+                  <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-300">
+                    Product
+                  </th>
+                  <th className="py-2 px-4 font-medium text-gray-600 dark:text-gray-300">
+                    Category
+                  </th>
+                  <th className="py-2 px-4 font-medium text-gray-600 dark:text-gray-300">
+                    Weight
+                  </th>
+                  <th className="py-2 px-4 font-medium text-gray-600 dark:text-gray-300">
+                    Dimensions
+                  </th>
+                  <th className="py-2 px-4 font-medium text-gray-600 dark:text-gray-300">
+                    Delivery Notes
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {(orderUuid && MOCK_ORDER_PRODUCTS[orderUuid]) ? (
+                  MOCK_ORDER_PRODUCTS[orderUuid].map((product, index) => (
+                    <tr
+                      key={`${orderUuid}-product-${index}`}
+                      className="border-b border-gray-100 dark:border-gray-800 last:border-0"
+                    >
+                      <td className="py-2 pr-4">
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          className="h-16 w-16 rounded object-cover border border-gray-200 dark:border-gray-700"
+                        />
+                      </td>
+                      <td className="py-2 pr-4 text-gray-900 dark:text-gray-100">
+                        {product.name}
+                      </td>
+                      <td className="py-2 px-4 text-gray-900 dark:text-gray-100">
+                        {product.category}
+                      </td>
+                      <td className="py-2 px-4 text-gray-900 dark:text-gray-100">
+                        {product.weight}
+                      </td>
+                      <td className="py-2 px-4 text-gray-900 dark:text-gray-100">
+                        {product.dimensions}
+                      </td>
+                      <td className="py-2 px-4 text-gray-700 dark:text-gray-300">
+                        {product.deliveryNotes || "-"}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      className="py-3 pr-4 text-gray-500 dark:text-gray-400"
+                      colSpan={4}
+                    >
+                      No products found for this order.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </ComponentCard>
 
